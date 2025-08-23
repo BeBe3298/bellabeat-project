@@ -20,18 +20,19 @@ Bellabeat is a health-tech company offering smart wellness products for women, i
 - Bellabeat marketing analytics team: A team of data analysts responsible for collecting, analyzing, and reporting data that helps guide Bellabeat’s marketing strategy. 
 
 ## Dataset
-Source: FitBit Fitness Tracker Data from Kaggle
-Period: From 12 March 2016 to 12 May 2016
+Source: FitBit Fitness Tracker Data from Kaggle\
+Period: From 12 March 2016 to 12 May 2016\
 Files used:
 - dailyActivity_merged.csv
 - minuteMETsNarrow_merged
-- sleepDay_merged.csv
-Limitations: The dataset includes data from only 33 anonymized users over a two-month period. 
+- sleepDay_merged.csv\
+  \
+Limitations: The dataset includes data from only 33 anonymized users over a two-month period. \
 This limited sample size, timeframe and timeslot may restrict the ability to fully represent the user habits and long-term behavior nowadays. 
 
 
 ## Tools and Target Completion Date
-Tools: SQL, Excel, Tableau
+Tools: SQL, Excel, Tableau\
 Target Completion date: Thursday, 28 Aug 2025
 
 
