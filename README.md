@@ -5,8 +5,8 @@ Capstone project for the Google Data Analytics Certificate. Analyzing Fitbit dat
 - 🌿 [Overview](#Bellabeat-Overview)
   - 🧑‍💼 [Stakeholders](#Stakeholders)
   - 📊 [Dataset](#Dataset)
-  - 🛠️ 📅 [Tools & Target Completion Date](#Tools-&-Target-Completion-Date)
-  - 🛠️ 📅 [Tools & Target Completion Date](#Tools-&-Target-Completion-Date)
+  - 🛠️ 📅 [Tools and Target Completion Date](#Tools-and-Target-Completion-Date)
+  
 
 ## Executive Summary
 As part of the final capstone for the Google Data Analytics Professional Certificate, this case study explores user activity data from Fitbit devices. Acting as a Junior Data Analyst on Bellabeat’s marketing analytics team, I analyzed public data from Kaggle to identify behavioral trends and provide actionable recommendations. These insights aim to support Bellabeat’s strategic decisions in product development and targeted marketing.
@@ -30,7 +30,7 @@ Limitations: The dataset includes data from only 33 anonymized users over a two-
 This limited sample size, timeframe and timeslot may restrict the ability to fully represent the user habits and long-term behavior nowadays. 
 
 
-## Tools & Target Completion Date
+## Tools and Target Completion Date
 Tools: SQL, Excel, Tableau
 Target Completion date: Thursday, 28 Aug 2025
 
