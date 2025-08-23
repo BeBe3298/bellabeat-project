@@ -5,7 +5,7 @@ Capstone project for the Google Data Analytics Certificate. Analyzing Fitbit dat
 - 🌿 [Overview](#Bellabeat-Overview)
   - 🧑‍💼 [Stakeholders](#Stakeholders)
   - 📊 [Dataset](#Dataset)
-  - 🛠️ 📅 [Tools and Target Completion Date](#Tools-&-Targe-Completion-Date)
+  - 🛠️ 📅 [Tools and Target Completion Date](#Tools-&-Target-Completion-Date)
 
 
 ## Executive Summary
