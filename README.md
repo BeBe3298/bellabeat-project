@@ -132,11 +132,8 @@ mets_df.to_csv('mets_data_cleaned.csv', index=False)
 ```
 
 
-## Data Cleaning
-
-Upload cvs files onto Big Query to analysis
-
-**Step 1 - Check Number of Distinct ID & Rows**
+**Step 4 - Check Number of Distinct ID & Rows**
+Uploaded cvs files onto Big Query to analysis
 
 ```SQL
 #Check Number of Distinct ID
@@ -175,9 +172,9 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
     - Sleep_Data: 413
     - MEts_data: 1325580
  
-**Step 2 - Find Duplicated Rows, Remove & Check**
-**2.1 - Activity Data**
-- **2.1.1 - Find Duplicated**
+**Step 5 - Find Duplicated Rows, Remove & Check**
+**5.1 - Activity Data**
+- **5.1.1 - Find Duplicated**
   ```SQL
   CREATE OR REPLACE TABLE lucky-sphinx-461610-i6.BELLABEAT.Activity_Duplicates AS
   SELECT * FROM lucky-sphinx-461610-i6.BELLABEAT.Activity
@@ -196,8 +193,8 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
   - ***Result:***
   - No duplicated Activity data need to be removed.
             
-- **2.2 - Sleep Data**
-  - **2.2.1 - Find Duplicates**
+- **5.2 - Sleep Data**
+  - **5.2.1 - Find Duplicates**
     ```SQL
     CREATE OR REPLACE TABLE lucky-sphinx-461610-i6.BELLABEAT.Sleep_Duplicates AS
     SELECT *
@@ -219,7 +216,7 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
         6	4702921684	2016-05-07	1	520	543
         ```
 
-  - **2.2.2 - Remove Duplicates & Check**
+  - **5.2.2 - Remove Duplicates & Check**
     ```SQL
     #Remove duplicates
     CREATE OR REPLACE TABLE lucky-sphinx-461610-i6.BELLABEAT.Sleep_Data_NoDupes AS
@@ -243,8 +240,8 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
         410
         ```
 
-- **2.3 - METs Data**
-  - **2.3.1 - Find Duplicates**
+- **5.3 - METs Data**
+  - **5.3.1 - Find Duplicates**
 
     ```SQL
     CREATE OR REPLACE TABLE lucky-sphinx-461610-i6.BELLABEAT.mets_Duplicates AS
@@ -257,8 +254,8 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
     - ***Result:***
       - No duplicated METs data need to be removed.
     
-**Step 3 - Find Missing Value**
-- **3.1 Activity Data**
+**Step 6 - Find Missing Value**
+- **6.1 Activity Data**
   ```SQL
   SELECT
   COUNT(*) AS total_rows,
@@ -286,7 +283,7 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
   - **Result**
     - No missing values detected
 
-- **3.2 Sleep Data**
+- **6.2 Sleep Data**
   ```sql
   SELECT
   COUNT(*) AS total_rows,
@@ -300,7 +297,7 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
   - **Result**
     - No missing value
       
-- **3.1 METs Data**
+- **6.3 METs Data**
   ```SQL
   SELECT
   COUNT(*) AS total_rows,
@@ -313,7 +310,7 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
   - **Result**
     - No missing value
    
-**Step 4 - Add METs into Activity Data**
+**Step 7 - Add METs into Activity Data**
 ```sql
 CREATE OR REPLACE TABLE `lucky-sphinx-461610-i6.BELLABEAT.Activity_with_METs` AS
 SELECT
@@ -331,7 +328,7 @@ ORDER BY
 ```
 
  
-**Step 5 - Data Consolidation**
+**Step 8 - Data Consolidation**
 **#1 - Join sleep data to Activity data**
 **#2 - Classify sleep category**
 **#3 - Sum total activity minutes**
@@ -406,8 +403,8 @@ ON
           Row	Unique_User_Count 1	33
           ```
 
-           
-**Step 6 - Create new table and count the average data value per ID**
+## Data Analyse ##        
+**Create new table and count the average data value per ID**
 ```sql
 CREATE OR REPLACE TABLE `lucky-sphinx-461610-i6.BELLABEAT.average_per_user` AS
 SELECT
