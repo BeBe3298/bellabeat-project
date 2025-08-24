@@ -97,10 +97,10 @@ print(sleep_df['SleepDay'].dtype)
 print(mets_df['ActivityMinute'].dtype)
 print(activity_df['ActivityDate'].dtype)
 ```
-Result: Converted the data type successfully
+***Result:*** Converted the data type successfully
 
 ```
-#Standardize the date formate
+#Standardize the date format
 #  Sleep Data ➜ Keep only the date (as string), discard the time
 sleep_df['SleepDate'] = sleep_df['SleepDay'].dt.strftime('%Y/%m/%d')
 
@@ -114,9 +114,9 @@ mets_df['ActivityTime'] = mets_df['ActivityMinute'].dt.strftime('%H:%M:%S')
 ```
 #check if changed successfully
 print(sleep_df[['SleepDay', 'SleepDate']].head())
-print(activity_df[['ActivityDate', 'ActivityDateOnly']].head())
+print(activity_df[['ActivityDate']].head())
 print(mets_df[['ActivityMinute', 'ActivityDate', 'ActivityTime']].head())
 ```
-Results:
+***Results:***
 All date formats across all datasets have been successfully converted to the `yyyy/mm/dd` format.
 
