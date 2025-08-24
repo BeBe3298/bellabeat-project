@@ -43,12 +43,80 @@ Target Completion date: Thursday, 28 Aug 2025
 **Solution**  
 Use Google Colab + Python for preprocessing  
 
-Step 1. Import datasets
-
+***Step 1. Import datasets***
 ```python
 import pandas as pd
 
 sleep_df = pd.read_csv('/content/April_sleepDay_merged.csv')
 mets_df = pd.read_csv('/content/April_minuteMETsNarrow_merged.csv')
 activity_df = pd.read_csv('/content/April_dailyActivity_merged.csv')
-heartrate_df = pd.read_csv('/content/April_heartrate_seconds_merged.csv')```
+
+# Preview first rows
+print("Sleep Data:")  
+print(sleep_df.head())  
+
+print("\nMETS Data:")  
+print(mets_df.head())  
+
+print("\nActivity Data:")  
+print(activity_df.head())  
+```
+Findings:
+Sleep Data: 4/12/2016 12:00:00 AM
+METs Data: 4/12/2016 12:00:00 AM
+Activity Data: 4/12/2016
+
+```
+#Structure preview
+print("sleep_df：")
+sleep_df.info()
+
+print("METs mets_df：")
+mets_df.info()
+
+print("activity_df：")
+activity_df.info()
+```
+**Findings**  
+- Date columns stored as `object` type (strings), not proper `datetime`.  
+- Formats inconsistent across datasets (`mm/dd/yyyy`, `yyyy-mm-dd`, timestamps).  
+
+**Follow-up Action**  
+Convert all date columns to standardized `datetime` format to enable accurate time-based analysis and joins in BigQuery.
+
+
+***Step 2. Fix datetime format***
+```
+sleep_df['SleepDay'] = pd.to_datetime(sleep_df['SleepDay'])
+mets_df['ActivityMinute'] = pd.to_datetime(mets_df['ActivityMinute'])
+activity_df['ActivityDate'] = pd.to_datetime(activity_df['ActivityDate'])
+```
+
+```# Check the data type of date columns
+print(sleep_df['SleepDay'].dtype)
+print(mets_df['ActivityMinute'].dtype)
+print(activity_df['ActivityDate'].dtype)
+```
+Result: Converted the data type successfully
+
+```
+#Standardize the date formate
+#  Sleep Data ➜ Keep only the date (as string), discard the time
+sleep_df['SleepDate'] = sleep_df['SleepDay'].dt.strftime('%Y/%m/%d')
+
+# Activity Data ➜ Keep only the date (as string), discard the time
+activity_df['ActivityDateOnly'] = activity_df['ActivityDate'].dt.strftime('%Y/%m/%d')
+
+# METS Data ➜ Keep both date and time (stored as string, for BigQuery compatibility)
+mets_df['ActivityDate'] = mets_df['ActivityMinute'].dt.strftime('%Y/%m/%d')
+mets_df['ActivityTime'] = mets_df['ActivityMinute'].dt.strftime('%H:%M:%S')
+```
+```
+#check if changed successfully
+print(sleep_df[['SleepDay', 'SleepDate']].head())
+print(activity_df[['ActivityDate', 'ActivityDateOnly']].head())
+print(mets_df[['ActivityMinute', 'ActivityDate', 'ActivityTime']].head())
+```
+Results:
+All date formats across all datasets have been successfully converted to the `yyyy/mm/dd` format.
+
