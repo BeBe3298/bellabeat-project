@@ -257,6 +257,186 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
     - ***Result:***
       - No duplicated METs data need to be removed.
     
-**Step 3 - Data Cleaning**
+**Step 3 - Find Missing Value**
 - **3.1 Activity Data**
-- 
+  ```SQL
+  SELECT
+  COUNT(*) AS total_rows,
+  COUNTIF(Id IS NULL) AS missing_Id,
+  COUNTIF(ActivityDate IS NULL) AS missing_ActivityDate,
+  COUNTIF(TotalSteps IS NULL) AS missing_TotalSteps,
+  COUNTIF(TotalDistance IS NULL) AS missing_TotalDistance,
+  COUNTIF(TrackerDistance IS NULL) AS missing_TrackerDistance,
+  COUNTIF(LoggedActivitiesDistance IS NULL) AS
+  missing_LoggedActivitiesDistance,
+  COUNTIF(VeryActiveDistance IS NULL) AS missing_VeryActiveDistance,
+  COUNTIF(ModeratelyActiveDistance IS NULL) AS
+  missing_ModeratelyActiveDistance,
+  COUNTIF(LightActiveDistance IS NULL) AS missing_LightActiveDistance,
+  COUNTIF(SedentaryActiveDistance IS NULL) AS
+  missing_SedentaryActiveDistance,
+  COUNTIF(VeryActiveMinutes IS NULL) AS missing_VeryActiveMinutes,
+  COUNTIF(FairlyActiveMinutes IS NULL) AS missing_FairlyActiveMinutes,
+  COUNTIF(LightlyActiveMinutes IS NULL) AS missing_LightlyActiveMinutes,
+  COUNTIF(SedentaryMinutes IS NULL) AS missing_SedentaryMinutes,
+  COUNTIF(Calories IS NULL) AS missing_Calories,
+  COUNTIF(ActivityDateOnly IS NULL) AS missing_ActivityDateOnly
+  FROM lucky-sphinx-461610-i6.BELLABEAT.Activity;
+  ```
+  - **Result**
+    - No missing value
+
+- **3.2 Sleep Data**
+  ```sql
+  SELECT
+  COUNT(*) AS total_rows,
+  COUNTIF(Id IS NULL) AS missing_Id,
+  COUNTIF(SleepDay IS NULL) AS missing_SleepDay,
+  COUNTIF(TotalSleepRecords IS NULL) AS missing_TotalSleepRecords,
+  COUNTIF(TotalMinutesAsleep IS NULL) AS missing_TotalMinutesAsleep,
+  COUNTIF(TotalTimeInBed IS NULL) AS missing_TotalTimeInBed
+  FROM lucky-sphinx-461610-i6.BELLABEAT.Sleep;
+  ```
+  - **Result**
+    - No missing value
+      
+- **3.1 METs Data**
+  ```SQL
+  SELECT
+  COUNT(*) AS total_rows,
+  COUNTIF(Id IS NULL) AS missing_Id,
+  COUNTIF(ActivityMinute IS NULL) AS missing_ActivityMinute,
+  COUNTIF(METs IS NULL) AS missing_METs
+  FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
+  ```
+
+  - **Result**
+    - No missing value
+   
+**Step 4 - Add METs into Activity Data**
+```sql
+CREATE OR REPLACE TABLE `lucky-sphinx-461610-i6.BELLABEAT.Activity_with_METs` AS
+SELECT
+  a.*,
+  m.Total_METs
+FROM
+  `lucky-sphinx-461610-i6.BELLABEAT.Activity` AS a
+LEFT JOIN
+  `lucky-sphinx-461610-i6.BELLABEAT.mets_summary` AS m
+ON
+  a.Id = m.Id AND a.ActivityDate = m.ActivityDate
+ORDER BY
+  a.Id,
+  a.ActivityDate;
+```
+
+ 
+**Step 5 - Data Consolidation**
+**#1 - Join sleep data to Activity data**
+**#2 - Classify sleep category**
+**#3 - Sum total activity minutes**
+**#4 - Identify Weekday**
+**#5 - Identify Weekday or Weekend**
+```sql
+#1 - Join sleep data to Activity data
+CREATE OR REPLACE TABLE `lucky-sphinx-461610-i6.BELLABEAT.activity_with_METs2` AS
+SELECT
+  `lucky-sphinx-461610-i6.BELLABEAT.Activity_with_METs`.Id,
+  ActivityDate,
+  TotalSteps,
+  TotalDistance,
+  TrackerDistance,
+  LoggedActivitiesDistance,
+  VeryActiveDistance,
+  ModeratelyActiveDistance,
+  LightActiveDistance,
+  SedentaryActiveDistance,
+  VeryActiveMinutes,
+  FairlyActiveMinutes,
+  LightlyActiveMinutes,
+  SedentaryMinutes,
+  Calories,
+  Total_METs,
+
+  -- sleep data
+  TotalMinutesAsleep,
+  TotalTimeInBed,
+
+  –#2 - Classify sleep category
+  CASE
+    WHEN TotalMinutesAsleep IS NULL THEN "Unknown"
+    WHEN TotalMinutesAsleep < 420 THEN "Short"
+    WHEN TotalMinutesAsleep BETWEEN 420 AND 540 THEN "Normal"
+    WHEN TotalMinutesAsleep > 540 THEN "Long"
+  END AS SleepCategory,
+
+  -- #3 - Sum total activity minutes
+  (VeryActiveMinutes + FairlyActiveMinutes + LightlyActiveMinutes) AS TotalActivityMinutes,
+
+  –#4 - Identify Weekday
+  FORMAT_DATE('%A', DATE(ActivityDate)) AS Weekday,
+
+  –#5 - Identify Weekday or Weekend
+  CASE
+    WHEN FORMAT_DATE('%A', DATE(ActivityDate)) IN ("Saturday", "Sunday") THEN "Weekend"
+    ELSE "Weekday"
+  END AS DayType
+
+FROM
+  `lucky-sphinx-461610-i6.BELLABEAT.Activity_with_METs`
+LEFT JOIN
+  `lucky-sphinx-461610-i6.BELLABEAT.Sleep_Data_NoDupes`
+ON
+  `lucky-sphinx-461610-i6.BELLABEAT.Activity_with_METs`.Id = `lucky-sphinx-461610-i6.BELLABEAT.Sleep_Data_NoDupes`.Id
+  AND `lucky-sphinx-461610-i6.BELLABEAT.Activity_with_METs`.ActivityDate = `lucky-sphinx-461610-i6.BELLABEAT.Sleep_Data_NoDupes`.SleepDay;
+```
+  - **Result**
+    - Get a new table: lucky-sphinx-461610-i6.BELLABEAT.activity_with_METs2
+
+      - **Check number of distinct ID of the new table**
+      ```sql
+      SELECT
+      COUNT(DISTINCT Id) AS Unique_User_Count
+      FROM
+      `lucky-sphinx-461610-i6.BELLABEAT.activity_with_METs2`;
+      ```
+     
+        - **Result**
+          ```sql
+          Row	Unique_User_Count 1	33
+          ```
+
+           
+**Step 6 - Create new table and count the average data value per ID**
+```sql
+CREATE OR REPLACE TABLE `lucky-sphinx-461610-i6.BELLABEAT.average_per_user` AS
+SELECT
+  Id,
+  AVG(TotalSteps) AS avg_TotalSteps,
+  AVG(TotalDistance) AS avg_TotalDistance,
+  AVG(TrackerDistance) AS avg_TrackerDistance,
+  AVG(LoggedActivitiesDistance) AS avg_LoggedActivitiesDistance,
+  AVG(VeryActiveDistance) AS avg_VeryActiveDistance,
+  AVG(ModeratelyActiveDistance) AS avg_ModeratelyActiveDistance,
+  AVG(LightActiveDistance) AS avg_LightActiveDistance,
+  AVG(SedentaryActiveDistance) AS avg_SedentaryActiveDistance,
+  AVG(VeryActiveMinutes) AS avg_VeryActiveMinutes,
+  AVG(FairlyActiveMinutes) AS avg_FairlyActiveMinutes,
+  AVG(LightlyActiveMinutes) AS avg_LightlyActiveMinutes,
+  AVG(SedentaryMinutes) AS avg_SedentaryMinutes,
+  AVG(Calories) AS avg_Calories,
+  AVG(Total_METs) AS avg_Total_METs,
+  AVG(TotalMinutesAsleep) AS avg_TotalMinutesAsleep,
+  AVG(TotalTimeInBed) AS avg_TotalTimeInBed,
+  AVG(TotalActivityMinutes) AS avg_TotalActivityMinutes
+FROM
+  `lucky-sphinx-461610-i6.BELLABEAT.activity_with_METs2`
+GROUP BY
+  Id;
+```
+- **Result:**
+  - Get new table: lucky-sphinx-461610-i6.BELLABEAT.average_per_user
+
+##
+
+  
