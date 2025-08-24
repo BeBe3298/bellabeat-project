@@ -8,7 +8,7 @@ Capstone project for the Google Data Analytics Certificate. Analyzing Fitbit dat
   - 🛠️ 📅 [Tools and Target Completion Date](#Tools-and-Target-Completion-Date)
 - [Data Preparation](#Data-Preparation)
 - [Data AnalyseCleaning](#Data-Anaslysis)
-### Executive Summary
+## Executive Summary
 As part of the final capstone for the Google Data Analytics Professional Certificate, this case study explores user activity data from Fitbit devices. Acting as a Junior Data Analyst on Bellabeat’s marketing analytics team, I analyzed public data from Kaggle to identify behavioral trends and provide actionable recommendations. These insights aim to support Bellabeat’s strategic decisions in product development and targeted marketing.
 
 ## Bellabeat Overview
@@ -123,7 +123,7 @@ print(mets_df[['ActivityMinute', 'ActivityDate', 'ActivityTime']].head())
 - ***Results:***
   - All date formats across all datasets have been successfully converted to the `yyyy/mm/dd` format.
 
-**Step 2.3 - Download CVS files**
+**Step 2.3 - Download CSV files**
 
 ```python
 sleep_df.to_csv('sleep_data_cleaned.csv', index=False)
@@ -133,7 +133,7 @@ mets_df.to_csv('mets_data_cleaned.csv', index=False)
 
 
 **Step 4 - Check Number of Distinct ID & Rows**
-Uploaded cvs files onto Big Query to analysis
+Uploaded CSV files onto Big Query to analysis
 
 ```SQL
 #Check Number of Distinct ID
