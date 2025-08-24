@@ -284,7 +284,7 @@ FROM lucky-sphinx-461610-i6.BELLABEAT.mets;
   FROM lucky-sphinx-461610-i6.BELLABEAT.Activity;
   ```
   - **Result**
-    - No missing value
+    - No missing values detected
 
 - **3.2 Sleep Data**
   ```sql
@@ -362,7 +362,7 @@ SELECT
   TotalMinutesAsleep,
   TotalTimeInBed,
 
-  –#2 - Classify sleep category
+  #2 - Classify sleep category
   CASE
     WHEN TotalMinutesAsleep IS NULL THEN "Unknown"
     WHEN TotalMinutesAsleep < 420 THEN "Short"
@@ -370,13 +370,13 @@ SELECT
     WHEN TotalMinutesAsleep > 540 THEN "Long"
   END AS SleepCategory,
 
-  -- #3 - Sum total activity minutes
+  #3 - Sum total activity minutes
   (VeryActiveMinutes + FairlyActiveMinutes + LightlyActiveMinutes) AS TotalActivityMinutes,
 
-  –#4 - Identify Weekday
+  #4 - Identify Weekday
   FORMAT_DATE('%A', DATE(ActivityDate)) AS Weekday,
 
-  –#5 - Identify Weekday or Weekend
+  #5 - Identify Weekday or Weekend
   CASE
     WHEN FORMAT_DATE('%A', DATE(ActivityDate)) IN ("Saturday", "Sunday") THEN "Weekend"
     ELSE "Weekday"
